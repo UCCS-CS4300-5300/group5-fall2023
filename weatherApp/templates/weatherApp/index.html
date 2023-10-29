@@ -1,25 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HELLOW WORLD!</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Infused Planning</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
 </head>
 <body>
-    <header>
-        <h1>This will be the index / base / home page for <b>Weather Infused Planning!</b></h1>
-        <nav>
-            
-        </nav>
+
+  <header> 
+    <div class="w3-container w3-indigo">
+      <h1>This will be the index / base / home page for <b>Weather Infused Planning!</b></h1>
+    </div>
+     <div class="w3-bar w3-blue-gray">
+      <div class="w3-dropdown-hover w3-blue-gray">
+        <button class="w3-button">Menu</button>
+        <div class="w3-dropdown-content w3-bar-block w3-card-4">
+          <a href="#" class="w3-bar-item w3-button">Link 1</a>
+          <a href="#" class="w3-bar-item w3-button">Link 2</a>
+          <a href="#" class="w3-bar-item w3-button">Link 3</a>
+        </div>
+      </div>
+      <a href="#" class="w3-bar-item w3-button w3-right">My Account</a>
+    </div>
+  </header>
+    </div> 
+  </header>
+  
+  
+  <div class="w3-container">
+  
+    <div class="w3-card-4 w3-margin">
+    
+    <header class="w3-container w3-blue">
+     <h1>Weather Notice!</h1>
     </header>
-
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer>
-        <p>&copy; 2023 Some College Students</p>
-    </footer>
+    
+    <div class="w3-container">
+     <p>Your <b>Outdoor Barbecue</b> event <b>tomorrow at 3:00 PM</b> may have hazardous weather!</p>
+    </div>
+      <button class="w3-button w3-block w3-blue">View Details</button>
+    </div>
+    
+    <div class="w3-panel">
+      <ul class="w3-ul w3-border w3-round-large w3-xlarge">
+        <li class="w3-hover-light-grey"> <img src="https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_3-256.png" class="w3-bar-item w3-round" style="width:85px"> Wednesday 9/27: Sunny - No Notices.</li>
+        <li class="w3-hover-light-grey"> <img src="https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_24-512.png" class="w3-bar-item w3-round" style="width:85px"> Thursday 9/27: Chance of Rain - 1 Notice.</li>
+        <li class="w3-hover-light-grey"> <img src="https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_3-256.png" class="w3-bar-item w3-round" style="width:85px"> Friday 9/29: Sunny - No Notices.</li>
+      </ul> 
+    </div>
+    
+    {% block content %}
+    {% endblock %}
+  </div>
+  
+  <footer>
+      <p>&copy; 2023 Some College Students</p>
+  </footer>
 </body>
 </html>
