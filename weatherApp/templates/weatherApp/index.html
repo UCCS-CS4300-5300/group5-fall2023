@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather-Infused Planning</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  
+  <script>
+    function use_ip(json) {
+      $.ajax({
+        url: {% url 'get_weather_from_ip' %},
+        data: {"ip": json.ip},
+        dataType: 'json',
+        success: function (data) {
+          document.getElementById("weatherdata").innerHTML = data.weather_data 
+        }
+      });
+    }
+  </script>
+
+  <script src="https://api.ipify.org?format=jsonp&callback=use_ip"></script>
 </head>
 <body>
 
@@ -35,8 +55,9 @@
     <header class="w3-container w3-blue">
      <h1>Weather Notice!</h1>
     </header>
-    
+      
     <div class="w3-container">
+      <p id=weatherdata></p>
      <p>Your <b>Outdoor Barbecue</b> event <b>tomorrow at 3:00 PM</b> may have hazardous weather!</p>
     </div>
       <button class="w3-button w3-block w3-blue">View Details</button>
