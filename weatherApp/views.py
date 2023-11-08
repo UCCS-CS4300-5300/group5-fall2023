@@ -8,7 +8,12 @@ from .models import Event
 
 
 def index(request):
-  return render(request, 'weatherApp/index.html')
+  event_list = list(Event.objects.all().order_by('start'))[:5]
+  return render(request, 'weatherApp/index.html', {'event_list': event_list})
+
+def allEvents(request):
+  event_list = list(Event.objects.all().order_by('start'))
+  return render(request, 'weatherApp/allEvents.html', {'event_list': event_list})
 
 
 

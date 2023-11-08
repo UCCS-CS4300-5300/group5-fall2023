@@ -16,9 +16,9 @@
       <div class="w3-dropdown-hover w3-blue-gray">
         <button class="w3-button">Menu</button>
         <div class="w3-dropdown-content w3-bar-block w3-card-4">
-          <a href="#" class="w3-bar-item w3-button">Link 1</a>
-          <a href="#" class="w3-bar-item w3-button">Link 2</a>
-          <a href="#" class="w3-bar-item w3-button">Link 3</a>
+          <a href="/" class="w3-bar-item w3-button">Home</a>
+          <a href="/createEvent" class="w3-bar-item w3-button">Create Event</a>
+          <a href="/allEvents" class="w3-bar-item w3-button">All Events</a>
         </div>
       </div>
       <a href="#" class="w3-bar-item w3-button w3-right">My Account</a>
@@ -44,9 +44,9 @@
     
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round-large w3-xlarge">
-        <li class="w3-hover-light-grey"> <img src="https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_3-256.png" class="w3-bar-item w3-round" style="width:85px"> Wednesday 9/27: Sunny - No Notices.</li>
-        <li class="w3-hover-light-grey"> <img src="https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_24-512.png" class="w3-bar-item w3-round" style="width:85px"> Thursday 9/27: Chance of Rain - 1 Notice.</li>
-        <li class="w3-hover-light-grey"> <img src="https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_3-256.png" class="w3-bar-item w3-round" style="width:85px"> Friday 9/29: Sunny - No Notices.</li>
+        {%for event in event_list%}
+        <li class="w3-hover-light-grey">{{event}} - {{event.start}} to {{event.end}}.</li>
+        {% endfor %}
       </ul> 
     </div>
     
