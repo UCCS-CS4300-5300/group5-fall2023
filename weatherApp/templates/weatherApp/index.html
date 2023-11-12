@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,40 +28,8 @@
   <script src="https://api.ipify.org?format=jsonp&callback=use_ip"></script>
 </head>
 <body>
+  {% include 'weatherApp/includes/headerBar.html' %}
 
-  <header> 
-    <div class="w3-container w3-indigo">
-      <h1>This will be the index / base / home page for <b>Weather Infused Planning!</b></h1>
-    </div>
-     <div class="w3-bar w3-blue-gray">
-      <div class="w3-dropdown-hover w3-blue-gray">
-        <button class="w3-button">Menu</button>
-        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-          <a href="/" class="w3-bar-item w3-button">Home</a>
-          <a href="/createEvent" class="w3-bar-item w3-button">Create Event</a>
-          <a href="/allEvents" class="w3-bar-item w3-button">All Events</a>
-        </div>
-      </div>
-      <div class="w3-dropdown-hover w3-blue-gray">
-        <button class="w3-bar-item w3-button w3-right">My Account</button>
-        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-          {% if user.is_authenticated %}           
-          <a href="#" class="w3-bar-item w3-button">Profile</a>
-          <a href="{% url 'logout' %}" class="w3-bar-item w3-button">Sign Out</a>
-          {% else %}
-          <a href="{% url 'login' %}" class="w3-bar-item w3-button">Login</a>
-          <a href="{% url 'signup' %}" class="w3-bar-item w3-button">Sign Up</a>
-          {% endif %}
-        </div>
-        </div>
-      </div>
-            
-    </div>
-  </header>
-    </div> 
-  </header>
-  
-  
   <div class="w3-container">
   
     <div class="w3-card-4 w3-margin">
@@ -71,7 +40,11 @@
       
     <div class="w3-container">
       <p id=weatherdata></p>
-     <p>Your <b>Outdoor Barbecue</b> event <b>tomorrow at 3:00 PM</b> may have hazardous weather!</p>
+      {%for event in event_list%}
+      {% if forloop.first %}
+     <p>Your <b>{{event.title}}</b> event <b>{{event.start}}</b> may have hazardous weather!</p>
+      {% endif %}
+      {% endfor %}
     </div>
       <button class="w3-button w3-block w3-blue">View Details</button>
     </div>
