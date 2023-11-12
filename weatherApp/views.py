@@ -2,8 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .forms import EventForm
+from .forms import EventForm, CustomUserCreationForm
 from .models import Event
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView as AuthLoginView
+from django.urls import reverse_lazy
+from django.views import generic
 from django.http import JsonResponse
 import requests
 
@@ -66,3 +70,11 @@ def get_weather_from_location(city, country_code):
   url = "http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=metric".format(city, country_code)
   response = requests.get(url)
   return response.json()
+
+class SignUpView(generic.CreateView):
+  form_class = CustomUserCreationForm
+  success_url = reverse_lazy('login')
+  template_name = 'weatherApp/signup.html'
+
+class LoginView(AuthLoginView):
+  template_name = 'weatherApp/login.html'

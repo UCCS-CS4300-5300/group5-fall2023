@@ -1,9 +1,14 @@
 from django.urls import path
+from .views import LoginView, SignUpView
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
   path("", views.index, name="index"),
   path("createEvent", views.createEvent, name="createEvent"),
   path("allEvents", views.allEvents, name="allEvents"),
-  path('get_weather_from_ip/', views.get_weather_from_ip, name="get_weather_from_ip")
+  path('get_weather_from_ip/', views.get_weather_from_ip, name="get_weather_from_ip"),
+  path('login/', LoginView.as_view(), name='login'),
+  path('signup/', SignUpView.as_view(), name='signup'),
+  path('logout/', auth_views.LogoutView.as_view(), name='logout'),
   ]
