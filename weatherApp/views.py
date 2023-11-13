@@ -2,18 +2,28 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .forms import EventForm
+from .forms import EventForm, CustomUserCreationForm
 from .models import Event
+from django.contrib.auth.views import LoginView as AuthLoginView
+from django.urls import reverse_lazy
+from django.views import generic
 from django.http import JsonResponse
 import requests
 
 def index(request):
-  event_list = list(Event.objects.all().order_by('start'))[:5]
+  if request.user.is_anonymous:
+    event_list = list(Event.objects.all().order_by('start').filter(user=1))[:5]
+  else:
+    event_list = list(Event.objects.all().order_by('start').filter(user=request.user))[:5]
   return render(request, 'weatherApp/index.html', {'event_list': event_list})
 
 def allEvents(request):
-  event_list = list(Event.objects.all().order_by('start'))
+  event_list = list(Event.objects.all().order_by('start').filter(user=request.user))
+  
   return render(request, 'weatherApp/allEvents.html', {'event_list': event_list})
+
+def headerBar(request):
+  return render(request, 'weatherApp/headerBar.html')
 
 
 
@@ -37,6 +47,7 @@ def createEvent(request):
         description = description_event,
         start = start_event,
         end = end_event,
+        user = request.user
       )
       event.save()
       return HttpResponse('New Event Added!') 
@@ -58,7 +69,7 @@ def get_weather_from_ip(request):
   weather_data = get_weather_from_location(city, country_code)
   description = weather_data['weather'][0]['description']
   temperature = weather_data['main']['temp']
-  s = "You're in {}, {}. You can expect {} with a temperature of {} degrees.".format(city, country_code, description, temperature)
+  s = "You're in {}, {}. You can expect {} with a temperature of {} C degrees.".format(city, country_code, description, temperature)
   data = {"weather_data": s}
   return JsonResponse(data)
 
@@ -66,3 +77,12 @@ def get_weather_from_location(city, country_code):
   url = "http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=metric".format(city, country_code)
   response = requests.get(url)
   return response.json()
+
+class SignUpView(generic.CreateView):
+  form_class = CustomUserCreationForm
+  success_url = reverse_lazy('login')
+  template_name = 'weatherApp/signup.html'
+
+class LoginView(AuthLoginView):
+  template_name = 'weatherApp/login.html'
+
