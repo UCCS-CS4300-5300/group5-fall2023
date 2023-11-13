@@ -69,12 +69,12 @@ def get_weather_from_ip(request):
   weather_data = get_weather_from_location(city, country_code)
   description = weather_data['weather'][0]['description']
   temperature = weather_data['main']['temp']
-  s = "You're in {}, {}. You can expect {} with a temperature of {} C degrees.".format(city, country_code, description, temperature)
+  s = "You're in {}, {}. You can expect {} with a temperature of {} F.".format(city, country_code, description, temperature)
   data = {"weather_data": s}
   return JsonResponse(data)
 
 def get_weather_from_location(city, country_code):
-  url = "http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=metric".format(city, country_code)
+  url = "http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=imperial".format(city, country_code)
   response = requests.get(url)
   return response.json()
 
@@ -86,3 +86,10 @@ class SignUpView(generic.CreateView):
 class LoginView(AuthLoginView):
   template_name = 'weatherApp/login.html'
 
+def settings(request):
+  if request.method == 'POST':
+    print("yippee")
+  else:
+    print("nay")
+
+  return render(request, 'weatherApp/settings_page.html')
