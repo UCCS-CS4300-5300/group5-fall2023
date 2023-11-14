@@ -87,9 +87,4 @@ class LoginView(AuthLoginView):
   template_name = 'weatherApp/login.html'
 
 def settings(request):
-  if request.method == 'POST':
-    print("yippee")
-  else:
-    print("nay")
-
   return render(request, 'weatherApp/settings_page.html')
