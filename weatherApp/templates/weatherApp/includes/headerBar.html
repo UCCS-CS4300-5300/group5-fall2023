@@ -7,8 +7,10 @@
     <button class="w3-button">Menu</button>
     <div class="w3-dropdown-content w3-bar-block w3-card-4">
       <a href="/" class="w3-bar-item w3-button">Home</a>
+      {% if user.is_authenticated %}  
       <a href="/createEvent" class="w3-bar-item w3-button">Create Event</a>
       <a href="/allEvents" class="w3-bar-item w3-button">All Events</a>
+      {% endif %}
     </div>
   </div>
   <div class="w3-dropdown-hover w3-blue-gray">
