@@ -23,8 +23,7 @@ def allEvents(request):
   return render(request, 'weatherApp/allEvents.html', {'event_list': event_list})
 
 def headerBar(request):
-  return render(request, 'weatherApp/headerBar.html')
-
+  return render(request, 'weatherApp/includes/headerBar.html')    
 
 
 #This is the Create Event Page
