@@ -5,6 +5,7 @@ from datetime import datetime
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
+from rest_framework import status
 
 # Test Cases for views.py
 class EventViewTestCase(TestCase):
@@ -19,7 +20,7 @@ class EventViewTestCase(TestCase):
   def test_index_view(self):
     # reverse index view and assert that it gets back 200 responce
     response = self.client.get(reverse('index'))
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
     # assert that the page contains new event
     self.assertContains(response, '<li class="w3-hover-light-grey">Test Event - Nov. 8, 2023, 10:15 a.m. to Nov. 8, 2023, 12:30 p.m.</li>')
     self.assertQuerysetEqual(
@@ -30,7 +31,7 @@ class EventViewTestCase(TestCase):
   def test_allEvents_view(self):
     # similar to previous test, but for allEvents view
     response = self.client.get(reverse('allEvents'))
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
     self.assertContains(response, '<li class="w3-hover-light-grey">Test Event - Nov. 8, 2023, 10:15 a.m. to Nov. 8, 2023, 12:30 p.m.</li>')
     self.assertQuerysetEqual(
       response.context['event_list'],
@@ -65,7 +66,7 @@ class SignupViewTest(TestCase):
 
   def test_signup_page_status_code(self):
     response = self.client.get(reverse('signup'))
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
 
   def test_signup_form(self):
     response = self.client.post(reverse('signup'), data={
@@ -85,7 +86,7 @@ class LoginViewTest(TestCase):
 
   def test_login_page_status_code(self):
     response = self.client.get(reverse('login'))
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
 
   def test_login(self):
     response = self.client.post(reverse('login'), data={
@@ -110,3 +111,8 @@ class LogoutTest(TestCase):
     # Check if user is now logged out
     response = self.client.get('/')
     self.assertFalse(response.context['user'].is_authenticated)
+
+class SettingsViewTest(TestCase):
+  def test_get_page(self):
+    response = self.client.get(reverse('settings'))
+    self.assertEqual(response.status_code, status.HTTP_200_OK)

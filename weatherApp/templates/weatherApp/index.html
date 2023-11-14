@@ -29,9 +29,13 @@
 </head>
 <body>
   {% include 'weatherApp/includes/headerBar.html' %}
-
-  <div class="w3-container">
   
+  <div class="w3-container">
+
+    <div class="w3-container w3-border w3-round-large">
+      <p id=weatherdata></p>
+    </div>
+    
     <div class="w3-card-4 w3-margin">
     
     <header class="w3-container w3-blue">
@@ -39,7 +43,7 @@
     </header>
       
     <div class="w3-container">
-      <p id=weatherdata></p>
+      
       {%for event in event_list%}
       {% if forloop.first %}
      <p>Your <b>{{event.title}}</b> event <b>{{event.start}}</b> may have hazardous weather!</p>
