@@ -34,31 +34,34 @@
   
     <div class="w3-card-4 w3-margin">
     
-    <header class="w3-container w3-blue">
-     <h1>Weather Notice!</h1>
-    </header>
+      <header class="w3-container w3-blue">
+        <p>{{s}}</p>
+      </header>
       
-    <div class="w3-container">
-      <p id=weatherdata></p>
-      {%for event in event_list%}
-      {% if forloop.first %}
-     <p>Your <b>{{event.title}}</b> event <b>{{event.start}}</b> may have hazardous weather!</p>
-      {% endif %}
-      {% endfor %}
+        {%for event in event_list%}
+        {% if event.start.date == now %}
+
+          {% if hazardous == True%}
+            <div class="w3-container">
+              <h1>Weather Notice! - </h1>
+              <p>Your <b>{{event.title}}</b> event today, <b>{{event.start}}</b> may have hazardous weather!</p>
+            </div>
+            <button class="w3-button w3-block w3-blue"><a href="event/{{event.id}}">View Details</a></button>
+          {% endif %}
+        
+        {% endif %}
+        {% endfor %}
+      </div>
     </div>
-      <button class="w3-button w3-block w3-blue">View Details</button>
-    </div>
-    
+  </div>
+
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round-large w3-xlarge">
         {%for event in event_list%}
-        <li class="w3-hover-light-grey">{{event}} - {{event.start}} to {{event.end}}</li>
+        <li class="w3-hover-light-grey"><a href="event/{{event.id}}">{{event}}</a> - {{event.start}} to {{event.end}}</li>
         {% endfor %}
       </ul> 
     </div>
-    
-    {% block content %}
-    {% endblock %}
   </div>
   
   <footer>

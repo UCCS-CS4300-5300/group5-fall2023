@@ -10,22 +10,22 @@
   {% include 'weatherApp/includes/headerBar.html' %}
 
   
-  <div class="w3-container">
-    <h2>Create Event</h2>
-    <div class="w3-card-4">
-      <div class="w3-container">
+<div class="w3-container">
+  <h2>Create Event</h2>
+  <div class="w3-card-4">
+    <div class="w3-container">
+      
+      <form action="{% url 'createEvent' %}" method="post">
         
-        <form action="{% url 'createEvent' %}" method="post">
-          
-          {% csrf_token %}
-          {{ event_form.as_p }}
-          
-          <input type="submit" value="Create">
-          <br>
-          
-        </form>
-      </div>
-    </div> 
+        {% csrf_token %}
+        {{ event_form.as_p }}
+        
+        <input type="submit" value="Create">
+        <br>
+        
+      </form>
+    </div>
+  </div> 
         
         
     

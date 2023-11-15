@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Infused Planning</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+</head>
+<body>
+
+  {% include 'weatherApp/includes/headerBar.html' %}
+
+  <div class="w3-card-4 w3-margin">
+
+    <header class="w3-container w3-blue">
+      <p>{{s}}</p>
+    </header>
+
+      {% if event.start.date == now %}
+
+        {% if hazardous == True%}
+          <div class="w3-container">
+            <h1>Weather Notice! - </h1>
+            <p>Your <b>{{event.title}}</b> event today, <b>{{event.start}}</b> may have hazardous weather!</p>
+          </div>
+          <button class="w3-button w3-block w3-blue"><a href="event/{{event.id}}">View Details</a></button>
+        {% endif %}
+
+      {% endif %}
+    </div>
+  </div>
+
+  {% if event == None %}
+  <div class="w3-container">
+    <h2>Please Log In To View Your Event</h2>
+  </div>
+  {% else %}
+
+
+  <div class="w3-container">
+    <h2>Event:</h2>
+
+    <div class="w3-panel">
+      <ul class="w3-ul w3-border w3-round-large w3-xlarge">
+        <li class="w3-hover-light-grey">Name: {{event}}</li>
+        <li class="w3-hover-light-grey">Description: {{event.description}}</li>
+        <li class="w3-hover-light-grey">Start Time: {{event.start}}</li>
+        <li class="w3-hover-light-grey">End Time: {{event.end}}</li>
+      </ul> 
+    </div>
+  </div>
+  {% endif %}
+
+  <footer>
+      <p>&copy; 2023 Some College Students</p>
+  </footer>
+</body>
+</html>
