@@ -15,7 +15,7 @@
     <div class="w3-card-4">
       <div class="w3-container">
 
-        <form action="{% url 'createEvent' %}" method="post">
+        <form method="post">
 
           {% csrf_token %}
           {{ event_form.as_p }}

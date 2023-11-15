@@ -69,18 +69,19 @@ def updateEvent(request, id):
   
 
   if request.method == 'POST':
-    form  = EventForm(request.POST or None, instance = event)
+    form  = EventForm(request.POST or None)
     if form.is_valid():
-      
-      form.title = form.cleaned_data['title']
-      form.description = form.cleaned_data['description']
-      form.start = form.cleaned_data['start']
-      form.end = form.cleaned_data['end']
+      #Update the specific field
+      event.title = form.cleaned_data['title']
+      event.description = form.cleaned_data['description']
+      event.start = form.cleaned_data['start']
+      event.end = form.cleaned_data['end']
 
-      form.save()
-      return HttpResponseRedirect("detailEvent/" + id)
+      event.save()
+      return HttpResponseRedirect("/")
 
   else:
+    #Fill in data to the page. NOTE: Does not fill in DateTimeField Currently
     form = EventForm(initial={
         'title': event.title,
         'description': event.description,
@@ -92,6 +93,7 @@ def updateEvent(request, id):
 
 #delete and return to front page
 def deleteEvent(request, id):
+  #Try and see if it is able to. If not redirect to home anyways.
   try:
     event = Event.objects.get(id = id)
     event.delete()
