@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Infused Planning</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+</head>
+<body>
+
+  {% include 'weatherApp/includes/headerBar.html' %}
+
+<div class="main">
+    <!-- Display attributes of instance -->
+    {{ event.title }} <br/>
+    {{ event.description }} <br/>
+    {{ event.start }} <br/>
+    {{ event.end }}
+</div>
+
+<div class="options">
+  <a href = "{% url 'updateEvent' event.id %}" class = "w3-button">Edit</a>
+  <a href = "{% url 'deleteEvent' event.id %}" class = "w3-button">Delete</a>
+</div>
