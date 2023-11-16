@@ -7,6 +7,47 @@ from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
 
 # Test Cases for views.py
+class EventCRUDTestCase(TestCase):
+  def setup(self):
+    Event.objects.create(
+      title = "Test Event",
+      description = "Test Description",
+      start = datetime(2023, 11, 8, 10, 15, 0),
+      end = datetime(2023, 11, 8, 12, 30, 0)
+    )
+    
+  def test_create_event(self):
+    #Unit Test
+    createEvent = Event.objects.get(title="Test Event")
+    self.assertEqual(str(createEvent), "Test Event")
+
+    #Integration Test
+    response = self.client.get(reverse('createEvent'))
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "addEvent.html")
+
+  def test_update_event(self):
+    updateEvent = Event.objects.get(title="Test Event")
+
+    newData = {
+      'title' : 'New Title',
+      'description' : 'New Description',
+    }
+
+    response = self.client.post('updateEvent', data=newData)
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(str(response), "New Title")
+
+  #Needs to be fixed
+  #def test_delete_event(self):
+    #deleteEvent = Event.objects.get(title="Test Event")
+    #response = self.client.post('deleteEvent', deleteEvent)
+    #self.assertEqual(response, )
+
+
+
+
+
 class EventViewTestCase(TestCase):
   # Create a test event for testing whether it gets added to the views
   def setUp(self):
@@ -16,22 +57,6 @@ class EventViewTestCase(TestCase):
       start = datetime(2023, 11, 8, 10, 15, 0),
       end = datetime(2023, 11, 8, 12, 30, 0)
     )
-    
-  def test_update_event(self):
-    
-    
-
-    
-    response = self.client.post(
-        reverse('detailEvent', event), 
-        {'title': 'Event Test', 'description': 'Description Test'})
-    self.assertEqual(str(event), "Event Test")
-
-    #self.assertEqual()
-    #self.assertTemplateUsed(response, "updateEvent.html")
-    #self.assertEqual(response.status_code, 302)
-    
-
   
   def test_index_view(self):
     # reverse index view and assert that it gets back 200 responce
