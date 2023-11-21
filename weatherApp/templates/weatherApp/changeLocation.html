@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Infused Planning</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+</head>
+<body>
+  {% include 'weatherApp/includes/headerBar.html' %}
+
+  <h3>Please enter the city and state you wish to get weather for.</h3>
+  
+  <form id="address-form" action="{% url 'changeLocation' %}" method="post">
+    <!--
+    <div class="w3-container">
+      <div class="w3-col m6">
+        <input class="w3-input w3-border w3-round" type="text" name="city" placeholder="City" required>
+      </div>
+      <div class="w3-col m6">
+        <input class="w3-input w3-border w3-round" type="text" name="state" placeholder="State" required>
+      </div>
+      <div class="w3-col m6">
+        <button class="w3-btn w3-blue w3-round" type="submit">Submit</button>
+      </div>
+    </div> -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+  </form>
+
+  <footer>
+    <p>&copy; 2023 Some College Students</p>
+  </footer>
+</body>
+</html>

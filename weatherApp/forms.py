@@ -1,6 +1,6 @@
 from django import forms
 #from django.forms import ModelForm
-from .models import Event
+from .models import Event, Location
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -51,3 +51,19 @@ class CustomUserCreationForm(UserCreationForm):
   class Meta:
       model = User
       fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+
+
+class ChangeLocationForm(forms.Form):
+  city = forms.CharField(
+    max_length=100,
+    required=True,
+    label="City",
+    #placeholder=Location.city,
+    widget = forms.TextInput({'class': 'form-control',}),)
+  state = forms.CharField(
+    max_length=100, 
+    required=True,
+    label="State",
+    #placeholder=Location.state,
+    widget=forms.TextInput(attrs={'placeholder':Location.state})
+  )
