@@ -11,12 +11,17 @@ from rest_framework import status
 class EventViewTestCase(TestCase):
   # Create a test event for testing whether it gets added to the views
   def setUp(self):
+    self.user = User.objects.create_user(username='testuser', password='testpassword')
+    self.client.login(username='testuser', password='testpassword')
     Event.objects.create(
       title = "Test Event",
       description = "Test Description",
       start = datetime(2023, 11, 8, 10, 15, 0),
-      end = datetime(2023, 11, 8, 12, 30, 0)
+      end = datetime(2023, 11, 8, 12, 30, 0),
+      user = self.user
     )
+    
+    
   def test_index_view(self):
     # reverse index view and assert that it gets back 200 responce
     response = self.client.get(reverse('index'))
@@ -116,3 +121,4 @@ class SettingsViewTest(TestCase):
   def test_get_page(self):
     response = self.client.get(reverse('settings'))
     self.assertEqual(response.status_code, status.HTTP_200_OK)
+

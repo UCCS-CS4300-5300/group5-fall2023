@@ -4,11 +4,13 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .forms import EventForm, CustomUserCreationForm
 from .models import Event
+from .serializers import EventModelSerializer
 from django.contrib.auth.views import LoginView as AuthLoginView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import JsonResponse
 import requests
+from rest_framework import viewsets
 
 def index(request):
   if request.user.is_anonymous:
@@ -88,3 +90,7 @@ class LoginView(AuthLoginView):
 
 def settings(request):
   return render(request, 'weatherApp/settings_page.html')
+
+class EventModelViewSet(viewsets.ModelViewSet):
+  queryset = Event.objects.all()
+  serializer_class = EventModelSerializer
