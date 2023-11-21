@@ -115,7 +115,7 @@ def changeLocation(request):
       state = form.cleaned_data['state']
       Location.city = city
       Location.state = state
-      Location.save()
+      #Location.save()
       get_weather()
       return redirect('/settings')#HttpResponse('Location Changed!') #redirect('weatherApp:get_weather', address=address)
   else:

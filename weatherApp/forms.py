@@ -64,6 +64,7 @@ class ChangeLocationForm(forms.Form):
     max_length=100, 
     required=True,
     label="State",
+    widget = forms.TextInput({'class': 'form-control',}),
     #placeholder=Location.state,
-    widget=forms.TextInput(attrs={'placeholder':Location.state})
+    #widget=forms.TextInput(attrs={'placeholder':Location.state})
   )
