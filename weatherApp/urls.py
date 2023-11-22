@@ -15,7 +15,6 @@ urlpatterns = [
   path("updateEvent/<id>", views.updateEvent, name="updateEvent"),
   path("deleteEvent/<id>", views.deleteEvent, name="deleteEvent"),
   path("allEvents", views.allEvents, name="allEvents"),
-  path("event/<int:id>/", views.eventDetails, name="eventDetails"),
   path('get_weather/', views.get_weather, name="get_weather"),
   path('headerBar', views.headerBar, name="headerBar"),
   path('login/', LoginView.as_view(), name='login'),
