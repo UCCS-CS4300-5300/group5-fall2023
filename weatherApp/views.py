@@ -24,11 +24,6 @@ def allEvents(request):
   
   return render(request, 'weatherApp/allEvents.html', {'event_list': event_list})
 
-def eventDetails(request, id):
-
-  event = Event.objects.get(pk=id)
-  return render(request, 'weatherApp/eventDetails.html', {"event": event})
-
 def headerBar(request):
   return render(request, 'weatherApp/includes/headerBar.html')  
 
