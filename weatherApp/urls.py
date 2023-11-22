@@ -12,6 +12,7 @@ urlpatterns = [
   path("", views.index, name="index"),
   path("createEvent", views.createEvent, name="createEvent"),
   path("allEvents", views.allEvents, name="allEvents"),
+  path("event/<int:id>/", views.eventDetails, name="eventDetails"),
   path('get_weather/', views.get_weather, name="get_weather"),
   path('headerBar', views.headerBar, name="headerBar"),
   path('login/', LoginView.as_view(), name='login'),
