@@ -11,3 +11,16 @@ class Event(models.Model):
 
   def __str__(self):
     return self.title
+
+class Location(models.Model):
+  #address = models.CharField(max_length = 200)
+  city = models.CharField(max_length = 100)
+  state = models.CharField(max_length = 100)
+  user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+  def __str__(self):
+    return self.city + ", " + self.state
+
+class Weather(models.Model):
+  description = models.CharField(max_length=250)
+  temperature = models.IntegerField()
+  wind_speed = models.CharField(max_length=50)

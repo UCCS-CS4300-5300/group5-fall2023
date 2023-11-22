@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .forms import EventForm, CustomUserCreationForm
-from .models import Event
+from .forms import ChangeLocationForm, EventForm, CustomUserCreationForm
+from .models import Event, Location, Weather
 from .serializers import EventModelSerializer
 from django.contrib.auth.views import LoginView as AuthLoginView
 from django.urls import reverse_lazy
@@ -59,24 +59,35 @@ def createEvent(request):
       
   return render(request, 'weatherApp/addEvent.html', {'event_form': form})
       
-def get_location_from_ip(ip_address):
-  response = requests.get("http://ip-api.com/json/{}".format(ip_address))
-  return response.json()
+#def get_location_from_ip(ip_address):
+#  response = requests.get("http://ip-api.com/json/{}".format(ip_address))
+#  return response.json()
 
-def get_weather_from_ip(request):
-  ip_address = request.GET.get("ip")
-  location = get_location_from_ip(ip_address)
-  city = location.get("city")
-  country_code = location.get("countryCode")
-  weather_data = get_weather_from_location(city, country_code)
-  description = weather_data['weather'][0]['description']
-  temperature = weather_data['main']['temp']
-  s = "You're in {}, {}. You can expect {} with a temperature of {} F.".format(city, country_code, description, temperature)
-  data = {"weather_data": s}
-  return JsonResponse(data)
+def get_weather():#_from_ip(request):
+#  ip_address = request.GET.get("ip")
+#  location = get_location_from_ip(ip_address)
+#  city = location.get("city")
+#  country_code = location.get("countryCode")
+  address = Location.city + "," + Location.state
+  weather_data = get_location(address)#(city, country_code)
+  print(weather_data)
+#  description = weather_data['weather'][0]['description']
+#  temperature = weather_data['main']['temp']
+#  s = "You're in {}, {}. You can expect {} with a temperature of {} F.".format(city, country_code, description, temperature)
+#  data = {"weather_data": s}
+#  return JsonResponse(data)
 
-def get_weather_from_location(city, country_code):
-  url = "http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=imperial".format(city, country_code)
+def get_location(address):#(city, country_code):
+  address_url = " https://geocode.maps.co/search?q={address}".format(address=address)
+  address_response = requests.get(address_url)
+  address_json = address_response.json()
+  lat = address_json[0]['lat']
+  lon = address_json[0]['lon']
+  url_url = "https://api.weather.gov/points/{latitude},{longitude}".format(latitude=lat, longitude=lon)
+#"http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=imperial".format(city, country_code)
+  url_response = requests.get(url_url)
+  url_json = url_response.json()
+  url = url_json['properties']['forecast']
   response = requests.get(url)
   return response.json()
 
@@ -94,3 +105,19 @@ def settings(request):
 class EventModelViewSet(viewsets.ModelViewSet):
   queryset = Event.objects.all()
   serializer_class = EventModelSerializer
+
+@csrf_exempt
+def changeLocation(request):
+  if request.method == 'POST':
+    form = ChangeLocationForm(request.POST)
+    if form.is_valid():
+      city = form.cleaned_data['city']
+      state = form.cleaned_data['state']
+      Location.city = city
+      Location.state = state
+      #Location.save()
+      get_weather()
+      return redirect('/settings')#HttpResponse('Location Changed!') #redirect('weatherApp:get_weather', address=address)
+  else:
+    form = ChangeLocationForm()
+  return render(request, 'weatherApp/changeLocation.html', {'form': form})

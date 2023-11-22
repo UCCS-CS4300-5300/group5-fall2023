@@ -6,6 +6,14 @@
   <title>Weather-Infused Planning</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
 </head>
+
+  <script>
+    function changeLocation(){ window.location.href = "/settings/changeLocation"; }
+    function signup(){ window.location.href = "/signup"}
+    function login(){ window.location.href = "/login"}
+    function logout(){ window.location.href = "/logout"}
+  </script>
+  
 <body>
   {% include 'weatherApp/includes/headerBar.html' %}
 
@@ -15,6 +23,9 @@
       <ul class="w3-ul w3-border w3-round">
         <li class="w3-hover-light-grey">App Theme</li>
         <li class="w3-hover-light-grey">Accessibility</li>
+        <li class="w3-hover-light-grey">Language</li>
+        <li class="w3-hover-light-grey" type="button" onclick="changeLocation()">Location</li>
+      </ul>
       </ul> 
     </div>
   </div>  
@@ -28,12 +39,17 @@
     </div>
   </div>  
   <div class="w3-container">
-    <h2>Your Account</h2>
+    <h2>My Account</h2>
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round">
+        {% if user.is_authenticated %}
         <li class="w3-hover-light-grey">Manage Profile</li>
         <li class="w3-hover-light-grey">Switch Accounts</li>
-        <li class="w3-hover-light-grey">Logout</li>
+        <li class="w3-hover-light-grey" type="button" onclick="logout()">Logout</li>
+        {% else %}
+        <li class="w3-hover-light-grey" type="button" onclick="login()">Login</li>
+        <li class="w3-hover-light-grey" type="button" onclick="signup()">Sign Up</li>
+        {% endif %}
       </ul> 
     </div>
   </div>  
