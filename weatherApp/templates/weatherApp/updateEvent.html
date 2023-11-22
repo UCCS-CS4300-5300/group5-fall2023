@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Infused Planning</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+</head>
+<body>
+  {% include 'weatherApp/includes/headerBar.html' %}
+
+
+  <div class="w3-container">
+    <h2>Update Event</h2>
+    <div class="w3-card-4">
+      <div class="w3-container">
+
+        <form method="post">
+
+          {% csrf_token %}
+          {{ event_form.as_p }}
+
+          <input type="submit" value="Update">
+          <br>
+
+        </form>
+      </div>
+    </div> 

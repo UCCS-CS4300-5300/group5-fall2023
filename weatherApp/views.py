@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.views import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -57,12 +57,54 @@ def createEvent(request):
         user = request.user
       )
       event.save()
-      return HttpResponse('New Event Added!') 
+      return HttpResponseRedirect('/') 
       
   else:
     form = EventForm()
       
   return render(request, 'weatherApp/addEvent.html', {'event_form': form})
+
+  
+#update the specific item in the database
+@csrf_exempt
+def updateEvent(request, id):
+  event = Event.objects.get(id = id)
+
+
+  if request.method == 'POST':
+    form  = EventForm(request.POST or None)
+    if form.is_valid():
+      #Update the specific field
+      event.title = form.cleaned_data['title']
+      event.description = form.cleaned_data['description']
+      event.start = form.cleaned_data['start']
+      event.end = form.cleaned_data['end']
+
+      event.save()
+      return HttpResponseRedirect("/")
+
+  else:
+    #Fill in data to the page. NOTE: Does not fill in DateTimeField Currently
+    form = EventForm(initial={
+        'title': event.title,
+        'description': event.description,
+        'start': event.start,
+        'end': event.end,
+    })
+
+  return render(request, "weatherApp/updateEvent.html", {'event_form': form})
+
+
+#delete and return to front page
+def deleteEvent(request, id):
+  #Try and see if it is able to. If not redirect to home anyways.
+  try:
+    event = Event.objects.get(id = id)
+    event.delete()
+    return HttpResponseRedirect("/")
+  except Event.DoesNotExist:
+    return HttpResponseRedirect("/")
+
       
 #def get_location_from_ip(ip_address):
 #  response = requests.get("http://ip-api.com/json/{}".format(ip_address))
