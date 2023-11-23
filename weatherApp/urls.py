@@ -18,5 +18,6 @@ urlpatterns = [
   path('signup/', SignUpView.as_view(), name='signup'),
   path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
   path('settings/', views.settings, name='settings'),
+  path("editUserSetting", views.editUserSetting, name="editUserSetting"),
   path('api/', include(router.urls)),
   ]
