@@ -70,6 +70,8 @@ def editUserSetting(request):
     form = UserSettingForm(request.POST)
     if form.is_valid():
       notif_preference = form.cleaned_data['weather_notifs']
+      # check if object already exists for this user so it can just
+      # be updated, otherwise create a new one for them
       if UserSetting.objects.filter(user=user_profile).exists():
         user_setting = UserSetting.objects.get(user=user_profile)
         user_setting.weather_notifs = notif_preference
