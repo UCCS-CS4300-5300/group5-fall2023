@@ -12,25 +12,20 @@
 
 
   <div class="w3-container">
-    <h2>All Events</h2>
+    <h2>Event Details</h2>
 
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round-large w3-xlarge">
-        {%for event in event_list%}
-        <li class="w3-hover-light-grey"><a href="/event/{{event.id}}">{{event}}</a> - {{event.start}} to {{event.end}}</li>
-        {% endfor %}
+        <li class="w3-hover-light-grey">Title: {{event}}</li>
+        <li class="w3-hover-light-grey">Description: {{event.description}}</li>
+        <li class="w3-hover-light-grey">Start Time: {{event.start}}</li>
+        <li class="w3-hover-light-grey">End Time: {{event.end}}</li>
       </ul> 
     </div>
-    
 
+    <a href = "{% url 'updateEvent' event.id %}" class = "w3-button w3-blue">Edit</a>
+    <a href = "{% url 'deleteEvent' event.id %}" class = "w3-button w3-red">Delete</a>
 
-
-
-
-
-
-    {% block content %}
-    {% endblock %}
   </div>
 
   <footer>

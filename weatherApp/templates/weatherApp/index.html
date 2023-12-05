@@ -7,6 +7,7 @@
   <title>Weather-Infused Planning</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
 
+  <!--
   <script
     src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -15,7 +16,7 @@
   <script>
     function use_ip(json) {
       $.ajax({
-        url: {% url 'get_weather_from_ip' %},
+        url: {% url 'get_weather' %},
         data: {"ip": json.ip},
         dataType: 'json',
         success: function (data) {
@@ -25,7 +26,15 @@
     }
   </script>
 
-  <script src="https://api.ipify.org?format=jsonp&callback=use_ip"></script>
+  <script src="https://api.ipify.org?format=jsonp&callback=use_ip"></script> -->
+
+  <script>
+    function run_get_weather() {
+      $.ajax({
+        url: {% url 'get_weather' %},
+      });
+    }
+  </script>
 </head>
 <body>
   {% include 'weatherApp/includes/headerBar.html' %}
@@ -56,7 +65,7 @@
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round-large w3-xlarge">
         {%for event in event_list%}
-        <li class="w3-hover-light-grey">{{event}} - {{event.start}} to {{event.end}}</li>
+        <li class="w3-hover-light-grey"><a href="/event/{{event.id}}">{{event}}</a> - {{event.start}} to {{event.end}}</li>
         {% endfor %}
       </ul> 
     </div>
