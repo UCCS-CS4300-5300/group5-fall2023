@@ -1,11 +1,12 @@
-{% extends 'weatherApp/index.html' %}
+{% extends 'weatherApp/base.html' %}
 
 {% block content %}
 <h2>Login</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Login</button>
-    <a href="{% url 'signup' %}">Sign up</a>
+    <button type="submit"  class="w3-button w3-blue">Login</button>
+    <a href="/" class="w3-button w3-red">Home</a>
+    <a href="{% url 'signup' %}" class="w3-button w3-black">Sign Up</a>
 </form>
 {% endblock %}

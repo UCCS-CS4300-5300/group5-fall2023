@@ -12,15 +12,19 @@
 
   <div class="w3-container">
     <h2>Weather Notification Preferences</h2>
-    <div class="w3-card-4">
       <div class="w3-container">
         <form action="{% url 'editUserSetting' %}" method="post">
           {% csrf_token %}
           {{ user_settings_form.weather_notifs }}
-          <input type ="submit" value="update">
+          <input class="w3-button w3-blue" type ="submit" value="update">
+          <a href="/settings" class="w3-button w3-red">Back</a>
           <br>
         </form>
       </div>
-    </div> 
-
-
+  </div>
+    
+    <footer>
+      <p>&copy; 2023 Some College Students</p>
+    </footer>
+</body>
+</html>
