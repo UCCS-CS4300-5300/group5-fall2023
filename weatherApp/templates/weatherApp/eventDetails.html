@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Infused Planning</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+</head>
+<body>
+
+  {% include 'weatherApp/includes/headerBar.html' %}
+
+
+  <div class="w3-container">
+    <h2>Event Details</h2>
+
+    <div class="w3-panel">
+      <ul class="w3-ul w3-border w3-round-large w3-xlarge">
+        <li class="w3-hover-light-grey">Title: {{event}}</li>
+        <li class="w3-hover-light-grey"><div vertical-align:top><img src="{{icon}}" class="w3-round">Forecast: {{weather}}</div></li>
+        <li class="w3-hover-light-grey">Description: {{event.description}}</li>
+        <li class="w3-hover-light-grey">Start Time: {{event.start}}</li>
+        <li class="w3-hover-light-grey">End Time: {{event.end}}</li>
+      </ul> 
+    </div>
+
+    <a href = "{% url 'updateEvent' event.id %}" class = "w3-button w3-blue">Edit</a>
+    <a href = "{% url 'deleteEvent' event.id %}" class = "w3-button w3-red">Delete</a>
+
+  </div>
+
+  <footer>
+      <p>&copy; 2023 Some College Students</p>
+  </footer>
+</body>
+</html>
