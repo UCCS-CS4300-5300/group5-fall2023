@@ -10,17 +10,27 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.http import JsonResponse
 import requests
+from datetime import datetime
 from rest_framework import viewsets
 
 
 def index(request):
+  weather_data = "Log In, Sign Up, or Change Location"
+  location = "No Location"
+  hazardous = []
   if request.user.is_anonymous:
     event_list = list(Event.objects.all().order_by('start').filter(user=1))[:5]
   else:
-    event_list = list(
-        Event.objects.all().order_by('start').filter(user=request.user))[:5]
-  return render(request, 'weatherApp/index.html', {'event_list': event_list})
+    event_list = list(Event.objects.all().order_by('start').filter(user=request.user))[:5]
+    location = Location.objects.all().order_by('state').filter(user=request.user).first()
+    if location:
+      weather_data = get_weather(request.user)['properties']['periods'][0]['detailedForecast']
+      hazardous = get_hazardous_events(request.user, get_weather(request.user)['properties'])
 
+  return render(request, 'weatherApp/index.html', {'event_list': event_list,
+                         'weather_data': weather_data,
+                         'location': location,
+                         'hazardous': hazardous})
 
 def allEvents(request):
   event_list = list(
@@ -32,12 +42,120 @@ def allEvents(request):
 
 def eventDetails(request, id):
 
-  event = Event.objects.get(pk=id)
-  return render(request, 'weatherApp/eventDetails.html', {"event": event})
+  weather = "No Forecast Data"
+  icon = ""
+
+  if request.user.is_anonymous:
+    event = Event.objects.get(pk=id)
+  else:
+    event = Event.objects.get(pk=id)
+    location = Location.objects.all().order_by('state').filter(user=request.user).first()
+    if location:
+      weather_data = get_weather(request.user)['properties']['periods']
+      
+      # Goes through the API response and adds icons when able
+      for period in weather_data:
+
+        period_time = timeParse(period['startTime'])
+
+        period_end = timeParse(period['endTime'])
+
+        # checking to see if period lands in range of any events
+        if period_time < period_end:
+          in_range = event.start >= period_time and event.start <= period_end
+        else: # crosses midnight
+          in_range = event.start >= period_time or event.start <= period_end
+
+        if in_range:
+          weather = period['detailedForecast']
+          icon = period['icon']
+      
+  return render(request,
+                'weatherApp/eventDetails.html',
+                {"event": event, "weather": weather, "icon": icon})
+
+  
 
 def headerBar(request):
-  return render(request, 'weatherApp/includes/headerBar.html')
+  return render(request, 'weatherApp/includes/headerBar.html')  
 
+# Function to make getting a datetime from api time easier
+def timeParse(period_time):
+  period_time = period_time.split('T')
+  day = period_time[0]
+  time = period_time[1].split('-')
+  offset = time[1].split(':')
+  period_time = day+time[0]+'-'+offset[0]+offset[1]
+  return datetime.strptime(period_time, '%Y-%m-%d%X%z')
+  
+# This takes the weather and a user's events, and returns a list of hazardous events
+def get_hazardous_events(this_user, weather):
+  event_list = list(Event.objects.all().order_by('start').filter(user=this_user))
+  weather_preference = list(UserSetting.objects.all().filter(user=this_user))[0]
+  weather_preference = weather_preference.weather_notifs
+  hazardous_events = []
+  
+  # Checking each period
+  for period in weather['periods']:
+
+    period_time = timeParse(period['startTime'])
+
+    period_end = timeParse(period['endTime'])
+
+    # Checking if any events are in this period
+    for event in event_list:
+
+      # checking to see if period lands in range of any events
+      if period_time < period_end:
+          in_range = event.start >= period_time and event.start <= period_end
+      else: # crosses midnight
+        in_range = event.start >= period_time or event.start <= period_end
+
+      # if events are in range and the weather is bad, add to the hazardous list
+      
+      if in_range:
+
+        # If enabled, so default, reasonable weather preferences
+        if weather_preference == "Enabled":
+          wind_pref = 15
+          temperature_pref = 50
+          precip_pref = 0
+
+        # Enabled, but only extreme conditions, so amplifies
+        elif weather_preference == "Extreme conditions only":
+          wind_pref = 30
+          temperature_pref = 32
+          precip_pref = 50
+
+        # Disabled, make it so the hazards never trigger
+        else:
+          wind_pref = 1500
+          temperature_pref = -5000
+          precip_pref = 200
+
+        # Getting wind speed
+        wind = period['windSpeed'].split(" ")
+        if len(wind) == 2:
+          wind = int(wind[0])
+        else:
+          wind = int(wind[2])
+
+        # Getting precip chance
+        precip = period['probabilityOfPrecipitation']['value']
+        if precip == None:
+          precip = 0
+        else:
+          precip = int(precip)
+        
+        
+        # Getting temperature
+        temperature = int(period['temperature'])
+
+        #if wind > wind_pref or temperature > temperature_pref or precipitation != 0:
+        if wind>wind_pref or temperature < temperature_pref or precip > precip_pref:
+          hazardous_events.append({"event": event, "icon": period['icon']})
+
+  return hazardous_events
 
 #This is the Create Event Page
 @csrf_exempt  #did not want to work
@@ -99,25 +217,6 @@ def editUserSetting(request):
 def get_location_from_ip(ip_address):
   response = requests.get("http://ip-api.com/json/{}".format(ip_address))
   return response.json()
-
-
-def get_weather_from_ip(request):
-  ip_address = request.GET.get("ip")
-  location = get_location_from_ip(ip_address)
-  city = location.get("city")
-  country_code = location.get("countryCode")
-  weather_data = get_weather_from_location(city, country_code)
-  description = weather_data['weather'][0]['description']
-  temperature = weather_data['main']['temp']
-  s = "You're in {}, {}. You can expect {} with a temperature of {} F.".format(
-      city, country_code, description, temperature)
-  data = {"weather_data": s}
-  return JsonResponse(data)
-
-
-def get_weather_from_location(city, country_code):
-  url = "http://api.openweathermap.org/data/2.5/weather?q={},{}&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=imperial".format(
-      city, country_code)
   
 #update the specific item in the database
 @csrf_exempt
@@ -164,14 +263,17 @@ def deleteEvent(request, id):
 #  response = requests.get("http://ip-api.com/json/{}".format(ip_address))
 #  return response.json()
 
-def get_weather():#_from_ip(request):
+def get_weather(user):#_from_ip(request):
 #  ip_address = request.GET.get("ip")
 #  location = get_location_from_ip(ip_address)
 #  city = location.get("city")
 #  country_code = location.get("countryCode")
-  address = Location.city + "," + Location.state
+
+  # getting location from user:
+  user_location = Location.objects.get(user=user)
+  address = user_location.city + "," + user_location.state
   weather_data = get_location(address)#(city, country_code)
-  print(weather_data)
+  return(weather_data)
 #  description = weather_data['weather'][0]['description']
 #  temperature = weather_data['main']['temp']
 #  s = "You're in {}, {}. You can expect {} with a temperature of {} F.".format(city, country_code, description, temperature)
@@ -221,7 +323,6 @@ def changeLocation(request):
       Location.city = city
       Location.state = state
       #Location.save()
-      get_weather()
       return redirect('/settings')#HttpResponse('Location Changed!') #redirect('weatherApp:get_weather', address=address)
   else:
     form = ChangeLocationForm()

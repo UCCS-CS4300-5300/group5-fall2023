@@ -40,27 +40,26 @@
   {% include 'weatherApp/includes/headerBar.html' %}
   
   <div class="w3-container">
-
-    <div class="w3-container w3-border w3-round-large">
-      <p id=weatherdata></p>
-    </div>
     
     <div class="w3-card-4 w3-margin">
     
     <header class="w3-container w3-blue">
-     <h1>Weather Notice!</h1>
+      <h1>{{location}}</h1>
+      <p>Current Weather: {{weather_data}}</p>
     </header>
-      
+    {%for hevent in hazardous%}
     <div class="w3-container">
+
+      <p>
+        <img src="{{hevent.icon}}" class="w3-round"> 
+        Your <b>{{hevent.event.title}}</b> event at {{hevent.event.start}} may have hazardous weather
+      </p>
       
-      {%for event in event_list%}
-      {% if forloop.first %}
-     <p>Your <b>{{event.title}}</b> event <b>{{event.start}}</b> may have hazardous weather!</p>
-      {% endif %}
-      {% endfor %}
     </div>
-      <button class="w3-button w3-block w3-blue">View Details</button>
+      <button class="w3-button w3-block w3-blue"><a href="/event/{{hevent.event.id}}">View Details</a></button>
+    {%endfor%}
     </div>
+    
     
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round-large w3-xlarge">
