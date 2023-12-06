@@ -23,10 +23,10 @@
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round">
         <li style="cursor: pointer" onclick="location.href='/editUserSetting'" class="w3-hover-light-grey">Weather Notifications</li>
-        <li class="w3-hover-light-grey">App Theme</li>
-        <li class="w3-hover-light-grey">Accessibility</li>
-        <li class="w3-hover-light-grey">Language</li>
-        <li class="w3-hover-light-grey" type="button" onclick="changeLocation()">Location</li>
+        <li class="w3-hover-light-green">App Theme</li>
+        <li class="w3-hover-light-green">Accessibility</li>
+        <li class="w3-hover-light-green">Language</li>
+        <li class="w3-hover-light-green" type="button" onclick="changeLocation()">Location</li>
       </ul>
       </ul> 
     </div>
@@ -35,8 +35,8 @@
     <h2>Data and Privacy</h2>
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round">
-        <li class="w3-hover-light-grey">Security</li>
-        <li class="w3-hover-light-grey">Privacy Notice</li>
+        <li class="w3-hover-light-green">Security</li>
+        <li class="w3-hover-light-green">Privacy Notice</li>
       </ul> 
     </div>
   </div>  
@@ -45,12 +45,12 @@
     <div class="w3-panel">
       <ul class="w3-ul w3-border w3-round">
         {% if user.is_authenticated %}
-        <li class="w3-hover-light-grey">Manage Profile</li>
-        <li class="w3-hover-light-grey">Switch Accounts</li>
-        <li class="w3-hover-light-grey" type="button" onclick="logout()">Logout</li>
+        <li class="w3-hover-light-green">Manage Profile</li>
+        <li class="w3-hover-light-green">Switch Accounts</li>
+        <li class="w3-hover-light-green" type="button" onclick="logout()">Logout</li>
         {% else %}
-        <li class="w3-hover-light-grey" type="button" onclick="login()">Login</li>
-        <li class="w3-hover-light-grey" type="button" onclick="signup()">Sign Up</li>
+        <li class="w3-hover-light-green" type="button" onclick="login()">Login</li>
+        <li class="w3-hover-light-green" type="button" onclick="signup()">Sign Up</li>
         {% endif %}
       </ul> 
     </div>
