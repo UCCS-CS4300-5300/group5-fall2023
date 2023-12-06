@@ -263,7 +263,7 @@ def shareEvent(request, id):
   weather = "No Forecast Data"
   icon = ""
 
-  #Function taken from Blairs portion. Works well already
+  #Function taken from Blairs portion. Works perfect as is so we just put it here.
   if request.user.is_anonymous:
     event = Event.objects.get(pk=id)
   else:

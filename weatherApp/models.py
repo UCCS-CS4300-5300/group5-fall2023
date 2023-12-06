@@ -12,13 +12,6 @@ class Event(models.Model):
   def __str__(self):
     return self.title
 
-class Share(models.Model):
-  title = models.CharField(max_length=100)
-  description = models.CharField(max_length=250)
-  start = models.DateTimeField()
-  end = models.DateTimeField()
-
-
 class UserSetting(models.Model):
   user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
   weather_notifs = models.CharField(max_length=100)
