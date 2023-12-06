@@ -28,4 +28,6 @@ urlpatterns = [
          views.changeLocation,
          name='changeLocation'),
     path('api/', include(router.urls)),
+    path('password_change_form/', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
 ]

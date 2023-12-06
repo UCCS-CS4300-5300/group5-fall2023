@@ -1,5 +1,6 @@
 { pkgs }: {
   deps = [
+    pkgs.python39Packages.pylint
     pkgs.python39Packages.coverage
     pkgs.python38Full
   ];

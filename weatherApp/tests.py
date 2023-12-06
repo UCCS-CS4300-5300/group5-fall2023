@@ -1,11 +1,14 @@
 from django.test import TestCase, Client
-from .models import Event, UserSetting
-from .views import index, allEvents, editUserSetting
+from .models import Event, UserSetting, Location
+from .views import *
 from datetime import datetime
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm
+from django.contrib.auth import views as auth_views
+from .forms import ChangeLocationForm, CustomUserCreationForm
 from rest_framework import status
+from rest_framework.test import APITestCase
+from datetime import datetime, timedelta
 
 
 # Test Cases for views.py
@@ -186,9 +189,179 @@ class LogoutTest(TestCase):
     # Check if user is now logged out
     response = self.client.get('/')
     self.assertFalse(response.context['user'].is_authenticated)
+class PasswordChangeTestCase(TestCase):
 
+  def setUp(self):
+    self.user = User.objects.create_user(username='testuser', email='test@example.com',   password='old_password')
+
+  def test_password_change_view(self):
+    self.client.login(username='testuser', password='old_password')
+    response = self.client.get(reverse('password_change'))
+    self.assertEqual(response.status_code, 200)
+    self.assertTrue(isinstance(response.context['view'], auth_views.PasswordChangeView))
+
+  def test_password_change_form(self):
+    self.client.login(username='testuser', password='old_password')
+    response = self.client.post(reverse('password_change'), {
+        'old_password': 'old_password',
+        'new_password1': 'new_password123',
+        'new_password2': 'new_password123',
+    })
+    # Check redirection after successful password change
+    self.assertRedirects(response, reverse('password_change_done'))
+
+    # Verify password has been changed
+    self.user.refresh_from_db()
+    self.assertTrue(self.user.check_password('new_password123'))
 
 class SettingsViewTest(TestCase):
   def test_get_page(self):
     response = self.client.get(reverse('settings'))
     self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+
+# tests added by Daniel for statment line coverage 
+class IndexViewTest(TestCase):
+
+    def setUp(self):
+        # Setup test data
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        Event.objects.create(title="Test Event",
+         description="Test Description",
+         start=datetime(2023, 11, 8, 10, 15, 0),
+         end=datetime(2023, 11, 8, 12, 30, 0),
+         user=self.user)
+
+    def test_index_view_anonymous(self):
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Log In, Sign Up, or Change Location', response.context['weather_data'])
+
+    def test_index_view_authenticated(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+
+
+class EventModelViewSetTest(APITestCase):
+
+  def setUp(self):
+    self.user = User.objects.create_user(username='testuser', password='password')
+    self.event = Event.objects.create(title="Test Event",
+       description="Test Description",
+       start=datetime(2023, 11, 8, 10, 15, 0),
+       end=datetime(2023, 11, 8, 12, 30, 0),
+       user=self.user)
+    self.client.force_authenticate(user=self.user)  # If authentication is required
+
+  def test_get_event_list(self):
+    response = self.client.get(reverse('event-list'))  # URL name for the event list
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+    self.assertEqual(len(response.data), 1)  # Assuming only one event is created
+
+  def test_get_event_detail(self):
+    response = self.client.get(reverse('event-detail', args=[self.event.id]))  # URL name for event detail
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+    self.assertEqual(response.data['title'], 'Test Event')
+
+class ChangeLocationViewTest(TestCase):
+
+  def setUp(self):
+    self.user = User.objects.create_user(username='testuser', password='password')
+    self.client.login(username='testuser', password='password')
+    Location.objects.create(city='Indianapolis', state="IN", user=self.user)
+
+  def test_location_get(self):
+    response = self.client.get(reverse('changeLocation')) 
+    self.assertEqual(response.status_code, 200)
+    self.assertIsInstance(response.context['form'], ChangeLocationForm)
+
+  def test_location_post(self):
+    response = self.client.post(reverse('changeLocation'), {
+        'city': 'Indianapolis',
+        'state': 'IN'
+    })
+    self.assertEqual(response.status_code, 302)  # Assuming it redirects
+    location = Location.objects.first()
+    self.assertEqual(location.city, 'Indianapolis')
+    self.assertEqual(location.state, 'IN')
+
+class EventModelViewSetTest(APITestCase):
+
+  def setUp(self):
+    self.user = User.objects.create_user(username='testuser', password='password')
+    self.event = Event.objects.create(title="Test Event",
+       description="Test Description",
+       start=datetime(2023, 11, 8, 10, 15, 0),
+       end=datetime(2023, 11, 8, 12, 30, 0),
+       user=self.user)
+    self.client.force_authenticate(user=self.user)
+
+  def test_get_event_list(self):
+    response = self.client.get(reverse('event-list'))  
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+    self.assertEqual(len(response.data), 1)  # Assuming only one event is created
+
+  def test_get_event_detail(self):
+    response = self.client.get(reverse('event-detail', args=[self.event.id]))  
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+    self.assertEqual(response.data['title'], 'Test Event')
+
+class GetHazardousEventsTest(TestCase):
+
+  def setUp(self):
+    # Setup test data
+    self.user = User.objects.create_user(username='testuser', password='testpassword')
+    self.event = Event.objects.create(
+        title="Test Event",
+        start=datetime(2023, 11, 8, 10, 15, 0),
+        end=datetime(2023, 11, 8, 12, 30, 0),
+        user=self.user
+    )
+    UserSetting.objects.create(user=self.user, weather_notifs='Enabled')
+
+  def test_get_hazardous_events(self):
+    # Mock weather data
+    start=datetime(2023, 11, 8, 10, 15, 0)
+    end=datetime(2023, 11, 8, 12, 30, 0)
+    mock_weather = {
+        'periods': [
+            {
+                'startTime': start,
+                'endTime': end,
+                'windSpeed': "20 mph",
+                'temperature': 45,
+                'probabilityOfPrecipitation': {'value': 10},
+                'icon': 'test_icon_url'
+            }
+            # Add more periods as needed to test different scenarios
+        ]
+    }
+
+    hazardous_events = get_hazardous_events(self.user, mock_weather)
+
+    # Check if the event is correctly identified as hazardous
+    self.assertEqual(len(hazardous_events), 1)
+    self.assertEqual(hazardous_events[0]['event'], self.event)
+    self.assertEqual(hazardous_events[0]['icon'], 'test_icon_url')
+
+  def test_get_hazardous_events_no_match(self):
+    # Mock weather data where the event is not in range
+    mock_weather = {
+        'periods': [
+            {
+                'startTime': datetime(2023, 11, 8, 10, 15, 0),
+                'endTime': datetime(2023, 11, 8, 12, 30, 0),
+                'windSpeed': "20 mph",
+                'temperature': 45,
+                'probabilityOfPrecipitation': {'value': 10},
+                'icon': 'test_icon_url'
+            }
+        ]
+    }
+
+    hazardous_events = get_hazardous_events(self.user, mock_weather)
+
+    # Check if no hazardous events are identified
+    self.assertEqual(len(hazardous_events), 0)

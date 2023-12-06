@@ -12,6 +12,7 @@
     function signup(){ window.location.href = "/signup"}
     function login(){ window.location.href = "/login"}
     function logout(){ window.location.href = "/logout"}
+    function change_password() {window.location.href = "/password_change_form"}
   </script>
   
 <body>
@@ -48,6 +49,7 @@
         <li class="w3-hover-light-grey">Manage Profile</li>
         <li class="w3-hover-light-grey">Switch Accounts</li>
         <li class="w3-hover-light-grey" type="button" onclick="logout()">Logout</li>
+        <li class="w3-hover-light-grey" type="button" onclick="change_password()">Change Password</li>
         {% else %}
         <li class="w3-hover-light-grey" type="button" onclick="login()">Login</li>
         <li class="w3-hover-light-grey" type="button" onclick="signup()">Sign Up</li>
