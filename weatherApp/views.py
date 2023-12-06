@@ -45,30 +45,31 @@ def eventDetails(request, id):
   weather = "No Forecast Data"
   icon = ""
 
-  if request.user.is_anonymous:
-    event = Event.objects.get(pk=id)
-  else:
-    event = Event.objects.get(pk=id)
-    location = Location.objects.all().order_by('state').filter(user=request.user).first()
-    if location:
-      weather_data = get_weather(request.user)['properties']['periods']
+  #Commented so this view is not seen by non users.
+  #if request.user.is_anonymous:
+    #event = Event.objects.get(pk=id)
+  #else:
+  event = Event.objects.get(pk=id)
+  location = Location.objects.all().order_by('state').filter(user=request.user).first()
+  if location:
+    weather_data = get_weather(request.user)['properties']['periods']
       
-      # Goes through the API response and adds icons when able
-      for period in weather_data:
+    # Goes through the API response and adds icons when able
+    for period in weather_data:
 
-        period_time = timeParse(period['startTime'])
+      period_time = timeParse(period['startTime'])
 
-        period_end = timeParse(period['endTime'])
+      period_end = timeParse(period['endTime'])
 
-        # checking to see if period lands in range of any events
-        if period_time < period_end:
-          in_range = event.start >= period_time and event.start <= period_end
-        else: # crosses midnight
-          in_range = event.start >= period_time or event.start <= period_end
+      # checking to see if period lands in range of any events
+      if period_time < period_end:
+        in_range = event.start >= period_time and event.start <= period_end
+      else: # crosses midnight
+        in_range = event.start >= period_time or event.start <= period_end
 
-        if in_range:
-          weather = period['detailedForecast']
-          icon = period['icon']
+      if in_range:
+        weather = period['detailedForecast']
+        icon = period['icon']
       
   return render(request,
                 'weatherApp/eventDetails.html',
@@ -223,7 +224,6 @@ def get_location_from_ip(ip_address):
 def updateEvent(request, id):
   event = Event.objects.get(id = id)
 
-
   if request.method == 'POST':
     form  = EventForm(request.POST or None)
     if form.is_valid():
@@ -258,7 +258,43 @@ def deleteEvent(request, id):
   except Event.DoesNotExist:
     return HttpResponseRedirect("/")
 
-      
+
+def shareEvent(request, id):
+  weather = "No Forecast Data"
+  icon = ""
+
+  #Function taken from Blairs portion. Works well already
+  if request.user.is_anonymous:
+    event = Event.objects.get(pk=id)
+  else:
+    event = Event.objects.get(pk=id)
+    location = Location.objects.all().order_by('state').filter(user=request.user).first()
+    if location:
+      weather_data = get_weather(request.user)['properties']['periods']
+
+      # Goes through the API response and adds icons when able
+      for period in weather_data:
+
+        period_time = timeParse(period['startTime'])
+
+        period_end = timeParse(period['endTime'])
+
+        # checking to see if period lands in range of any events
+        if period_time < period_end:
+          in_range = event.start >= period_time and event.start <= period_end
+        else: # crosses midnight
+          in_range = event.start >= period_time or event.start <= period_end
+
+        if in_range:
+          weather = period['detailedForecast']
+          icon = period['icon']
+
+
+  return render(request,
+                'weatherApp/eventDetailsShare.html',
+                {"event": event, "weather": weather, "icon": icon})
+
+
 #def get_location_from_ip(ip_address):
 #  response = requests.get("http://ip-api.com/json/{}".format(ip_address))
 #  return response.json()

@@ -47,8 +47,8 @@ class EventCRUDTestCase(TestCase):
     newData = {
       'title' : 'New Title',
       'description' : 'New Description',
-      'start' : timezone.make_aware(datetime(2023, 11, 7, 10, 15, 0)),
-      'end' : timezone.make_aware(datetime(2023, 11, 7, 12, 30, 0)),
+      'start' : datetime(2023, 11, 7, 10, 15, 0),
+      'end' : datetime(2023, 11, 7, 12, 30, 0),
     }
 
     response = self.client.post(reverse('updateEvent', args = [1]), data=newData)
