@@ -12,7 +12,7 @@
 
   <div class="w3-container">
     <h2>Update Event</h2>
-    <div class="w3-card-4">
+    <!--div class="w3-card-4"-->
       <div class="w3-container">
 
         <form method="post">
@@ -20,9 +20,10 @@
           {% csrf_token %}
           {{ event_form.as_p }}
 
-          <input type="submit" value="Update">
+          <input class="w3-button w3-blue" type="submit" value="Update">
+          <a href="/" class="w3-button w3-red">Back</a>
           <br>
 
         </form>
-      </div>
+        
     </div> 
